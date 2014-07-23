@@ -1,6 +1,6 @@
 import unittest
 from cli.test import AppTest
-from subprocess import check_output
+from subprocess import check_output, check_call
 from kalu_parse import KaluParser
 import locale
 import os
@@ -45,6 +45,17 @@ class TestBasicKaluParserFunctions(AppTest):
         output = output.decode(encoding)
         self.assertEquals(text, output)
         os.remove("blah.txt")
+
+    def test_no_difference(self):
+        text = "lala\nblahblah\n"
+        with open("blah.txt", "w") as mock_file:
+            mock_file.write(text)
+        check_call("./kalu_parse.py -f blah.txt > lala.txt", shell=True)
+        output_dest = check_output("./kalu_parse.py -f lala.txt", shell=True)
+        output_dest = output_dest.decode(encoding)
+        self.assertEquals(text, output_dest)
+        os.remove("blah.txt")
+        os.remove("lala.txt")
 
 
 if __name__ == '__main__':
