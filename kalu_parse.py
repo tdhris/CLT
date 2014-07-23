@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 from cli.app import CommandLineApp
+import os
+import inspect
 
 
 class KaluParser(CommandLineApp):
     VERSION = "1.0"
+
+    @classmethod
+    def get_path(cls):
+        return os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
 
     def setup(self):
         CommandLineApp.setup(self)
