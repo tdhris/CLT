@@ -5,7 +5,11 @@ import inspect
 
 
 class KaluParser(CommandLineApp):
-    VERSION = "1.0"
+    _VERSION = "1.0"
+
+    @classmethod
+    def get_version(cls):
+        return cls._VERSION
 
     @classmethod
     def get_path(cls):
@@ -24,10 +28,10 @@ class KaluParser(CommandLineApp):
 
     def main(self):
         if self.params.version:
-            self.get_version()
+            self.print_version()
 
-    def get_version(self):
-        print(self.VERSION)
+    def print_version(self):
+        print(self.get_version())
 
 
 if __name__ == "__main__":
