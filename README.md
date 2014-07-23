@@ -24,10 +24,10 @@ pip freeze
 
 Just put this in the first line of your script :
 
-'''#!/usr/bin/env python'''
+```#!/usr/bin/env python```
 Make the file executable with
 
-'''chmod +x myfile.py'''
+```chmod +x kalu_parse.py```
 Execute with
 
-'''./myfile.py'''
+```./kalu_parse.py```
