@@ -21,6 +21,13 @@ class TestBasicKaluParserFunctions(AppTest):
     def test_get_path_returns_correct_path(self):
         self.assertIn('kalu_parse.py', os.listdir())
 
+    def test_help(self):
+        output = check_output("./kalu_parse.py -h", shell=True)
+        output = output.decode(encoding)
+        self.assertIn('print the current version number and exit', output)
+        self.assertIn('--version', output)
+        self.assertIn('--help', output)
+
 
 if __name__ == '__main__':
     unittest.main()
