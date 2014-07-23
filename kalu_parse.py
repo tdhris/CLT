@@ -5,7 +5,7 @@ import inspect
 
 
 class KaluParser(CommandLineApp):
-    _VERSION = "1.0"
+    _VERSION = "1.3"
 
     @classmethod
     def get_version(cls):
