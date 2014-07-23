@@ -28,6 +28,24 @@ class TestBasicKaluParserFunctions(AppTest):
         self.assertIn('--version', output)
         self.assertIn('--help', output)
 
+    def test_read_file_when_file_does_not_end_with_newline(self):
+        text = "lala\nblahblah"
+        with open("blah.txt", "w") as mock_file:
+            mock_file.write(text)
+        output = check_output("./kalu_parse.py -f blah.txt", shell=True)
+        output = output.decode(encoding).rstrip('\n')
+        self.assertEquals(text, output)
+        os.remove("blah.txt")
+
+    def test_read_file_when_file_ends_with_newline(self):
+        text = "lala\nblahblah\n"
+        with open("blah.txt", "w") as mock_file:
+            mock_file.write(text)
+        output = check_output("./kalu_parse.py -f blah.txt", shell=True)
+        output = output.decode(encoding)
+        self.assertEquals(text, output)
+        os.remove("blah.txt")
+
 
 if __name__ == '__main__':
     unittest.main()
