@@ -5,7 +5,7 @@ import os
 
 class TestVersion(FunctionalTest):
     def test_the_current_version_is_printed_to_the_console(self):
-        version = KaluParser.VERSION
+        version = KaluParser.get_version()
         path = KaluParser.get_path()
         command = "./kalu_parse.py -v"
         result = self.run_script(os.path.join(path, command))
