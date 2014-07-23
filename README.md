@@ -30,4 +30,4 @@ Make the file executable with
 ```chmod +x kalu_parse.py```
 Execute with
 
-```./kalu_parse.py```
+``` ./kalu_parse.py ```
