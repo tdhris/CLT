@@ -2,10 +2,12 @@
 from cli.app import CommandLineApp, CommandLineMixin
 import os
 import inspect
+import sys
+# import argparse
 
 
 class KaluParser(CommandLineApp):
-    _VERSION = "1.3"
+    _VERSION = "1.4"
 
     @classmethod
     def get_version(cls):
@@ -26,8 +28,14 @@ class KaluParser(CommandLineApp):
                        help="print the current version number and exit",
                        default=False,
                        action="store_true")
-        self.add_param('-f', '--file', default='',
-                       type=str)
+        self.add_param('-f', '--file',
+                       nargs='?',
+                       type=str,
+                       # type=argparse.FileType('r'),
+                       # default=sys.stdin.readlines,
+                       help="read the contents of the file\
+                       and redirect them to stdout. If file\
+                       is not provided, read from stdin.")
 
     def main(self):
         if self.params.version:
@@ -38,14 +46,16 @@ class KaluParser(CommandLineApp):
     def print_version(self):
         print(self.get_version())
 
-    def print_file(self, filename):
-        try:
-            file = open(filename, "r")
-            for line in file.readlines():
-                print(line.rstrip('\n'))
+    def print_file(self, input):
+        if input == '-':
+            lines = sys.stdin.readlines()
+
+        elif os.path.exists(input) and os.path.isfile(input):
+            file = open(input, 'r')
+            lines = file.readlines()
             file.close()
-        except:
-            print('File does not exist!')
+        for line in lines:
+            print(line.rstrip('\n'))
 
 
 if __name__ == "__main__":

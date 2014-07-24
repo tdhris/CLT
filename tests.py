@@ -57,6 +57,15 @@ class TestBasicKaluParserFunctions(AppTest):
         os.remove("blah.txt")
         os.remove("lala.txt")
 
+    def test_can_capture_from_standard_input(self):
+        text = "lala\nblahblah\n"
+        with open("lala.txt", "w") as mock_file:
+            mock_file.write(text)
+        output = check_output("cat lala.txt | ./kalu_parse.py -f -", shell=True)
+        output = output.decode(encoding)
+        self.assertEquals(text, output)
+        os.remove("lala.txt")
+
 
 if __name__ == '__main__':
     unittest.main()
