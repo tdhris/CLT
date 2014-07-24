@@ -59,4 +59,4 @@ class KaluParser(CommandLineApp):
 
 
 if __name__ == "__main__":
-    KaluParser(name=KaluParser._get_modulename()).run()
+    KaluParser(name=__file__).run()
