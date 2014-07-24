@@ -51,9 +51,8 @@ class KaluParser(CommandLineApp):
             lines = sys.stdin.readlines()
 
         elif os.path.exists(input) and os.path.isfile(input):
-            file = open(input, 'r')
-            lines = file.readlines()
-            file.close()
+            with open(input, 'r') as file:
+                lines = file.readlines()
         for line in lines:
             print(line.rstrip('\n'))
 

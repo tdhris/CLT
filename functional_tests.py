@@ -23,9 +23,8 @@ class TestVersion(FunctionalTest):
     def test_file_is_read_exactly(self):
         text = "lala\nblahblah\n"
         filename = 'lala.txt'
-        mock_file = open(filename, "w")
-        mock_file.write(text)
-        mock_file.close()
+        with open(filename, "w") as mock_file:
+            mock_file.write(text)
 
         command = "./kalu_parse.py -f " + filename
         result = self.run_script(os.path.join(self.path, command))
