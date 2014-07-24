@@ -17,6 +17,7 @@ class TestBasicKaluParserFunctions(AppTest):
         output = check_output("./kalu_parse.py -v", shell=True)
         output = output.decode(encoding).rstrip('\n')
         self.assertEquals(self.app_cls.get_version(), output)
+        self.assertIn(KaluParser._get_modulename() + " version ", output)
 
     def test_get_path_returns_correct_path(self):
         self.assertIn('kalu_parse.py', os.listdir())
@@ -65,6 +66,11 @@ class TestBasicKaluParserFunctions(AppTest):
         output = output.decode(encoding)
         self.assertEquals(text, output)
         os.remove("lala.txt")
+
+    def test_module_name_in_help(self):
+        output = check_output("./kalu_parse.py -h", shell=True)
+        output = output.decode(encoding)
+        self.assertIn(KaluParser._get_modulename(), output)
 
 
 if __name__ == '__main__':

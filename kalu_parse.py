@@ -3,7 +3,6 @@ from cli.app import CommandLineApp, CommandLineMixin
 import os
 import inspect
 import sys
-# import argparse
 
 
 class KaluParser(CommandLineApp):
@@ -11,7 +10,11 @@ class KaluParser(CommandLineApp):
 
     @classmethod
     def get_version(cls):
-        return cls._VERSION
+        return cls._get_modulename() + " version " + cls._VERSION
+
+    @classmethod
+    def _get_modulename(cls):
+        return ''.join(os.path.basename(__file__).split('.')[:-1])
 
     @classmethod
     def get_path(cls):
@@ -31,8 +34,6 @@ class KaluParser(CommandLineApp):
         self.add_param('-f', '--file',
                        nargs='?',
                        type=str,
-                       # type=argparse.FileType('r'),
-                       # default=sys.stdin.readlines,
                        help="read the contents of the file\
                        and redirect them to stdout. If file\
                        is not provided, read from stdin.")
@@ -54,8 +55,8 @@ class KaluParser(CommandLineApp):
             with open(input, 'r') as file:
                 lines = file.readlines()
         for line in lines:
-            print(line.rstrip('\n'))
+            print(line, end="")
 
 
 if __name__ == "__main__":
-    KaluParser().run()
+    KaluParser(name=KaluParser._get_modulename()).run()
