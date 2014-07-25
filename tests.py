@@ -1,6 +1,6 @@
 import unittest
 from cli.test import AppTest
-from subprocess import check_output, check_call
+from subprocess import check_output, check_call, STDOUT
 from kalu_parse import KaluParser
 import locale
 import os
@@ -71,6 +71,16 @@ class TestBasicKaluParserFunctions(AppTest):
         output = check_output("./kalu_parse.py -h", shell=True)
         output = output.decode(encoding)
         self.assertIn(KaluParser._get_modulename(), output)
+
+
+class TestParser(AppTest):
+    def setUp(self):
+        self.parser = KaluParser()
+
+    def test_news_print_one_news_items(self):
+        output = check_output("./kalu_parse.py news -f kalu_output.txt", shell=True)
+        output = output.decode(encoding)
+        self.assertIn("MariaDB 10.0 enters [extra]", output)
 
 
 if __name__ == '__main__':
