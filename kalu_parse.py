@@ -39,7 +39,7 @@ class KaluParser(CommandLineApp):
                        and redirect them to stdout. If file\
                        is not provided, read from stdin.")
         self.add_param('parse',
-                       nargs='?', type=str,
+                       type=str,
                        choices=['news', 'aur', 'update'],
                        metavar='PARSE_OPTION',
                        help="Choose {news, aur or update}")
