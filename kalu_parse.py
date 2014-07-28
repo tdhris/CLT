@@ -72,6 +72,8 @@ class KaluParser(CommandLineApp):
         sys.exit(1)
 
     def parse_file(self, input):
+        if not self.params.parse:
+            self.print_no_arguments()
         if input != '-' and not self.is_file(input):
             return self.print_invalid_file()
         if self.params.parse == 'news':
