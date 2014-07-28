@@ -8,7 +8,7 @@ import argparse
 
 
 class KaluParser(CommandLineApp):
-    _VERSION = "1.5"
+    _VERSION = "1.7"
 
     @classmethod
     def get_version(cls):
@@ -61,9 +61,11 @@ class KaluParser(CommandLineApp):
         print("Error: no arguments provided.")
         print("Type " + KaluParser._get_modulename()
               + " --help for more information")
+        sys.exit(1)
 
     def print_invalid_file(self):
         print("Error: please provide an existing file")
+        sys.exit(1)
 
     def parse_file(self, input):
         if input != '-' and not self.is_file(input):
