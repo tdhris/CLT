@@ -40,7 +40,7 @@ class KaluParser(CommandLineApp):
                        is not provided, read from stdin.")
         self.add_param('parse',
                        nargs='?', type=str,
-                       choices=['news', 'aur'],
+                       choices=['news', 'aur', 'update'],
                        metavar='PARSE_OPTION')
 
     def main(self):
@@ -59,6 +59,9 @@ class KaluParser(CommandLineApp):
         elif self.params.parse == 'aur':
             parsed = self.parse_aur(input)
             self.print_content(parsed)
+        elif self.params.parse == 'update':
+            parsed = self.parse_update(input)
+            self.print_content(parsed, True)
         else:
             content = self.get_unparsed_content(input)
             self.print_content(content)
@@ -79,11 +82,26 @@ class KaluParser(CommandLineApp):
         aurs = []
         content = self.get_unparsed_content(input)
         aur_index = self.get_aur_index(content)
-        for line in content[aur_index + 1:]:
-            aur = self.get_line_content(line)
-            if aur:
-                aurs.append(aur)
+        if aur_index:
+            for line in content[aur_index + 1:]:
+                aur = self.get_line_content(line)
+                if aur:
+                    aurs.append(aur)
         return aurs
+
+    def parse_update(self, input):
+        updates = []
+        content = self.get_unparsed_content(input)
+        update_start = self.get_update_index(content)
+        update_end = self.get_aur_index(content)
+        if update_start and update_end:
+            update_lines = content[(update_start + 1): update_end]
+            for line in update_lines:
+                update = self.get_line_content(line)
+                if update:
+                    update = self.remove_size_info(update)
+                    updates.append(update)
+        return updates
 
     def get_unparsed_content(self, input):
         if input == '-':
@@ -96,13 +114,23 @@ class KaluParser(CommandLineApp):
 
     def get_line_content(self, line):
         parts = re.split(r'(- <b>| |<b>|</b>)', line)
-        parsed_line = [part for part in parts if part and not re.match(r'^(- <b>|<b>|</b>)$', part)]
+        parsed_line = ['->' if part == '>' else part for part in parts
+                       if part and not re.match(r'^(- <b>|<b>|</b>)$', part)]
         return ''.join(parsed_line)
 
     def get_aur_index(self, lines):
         for index, line in enumerate(lines):
                 if re.match(r'^AUR: (\d)+ packages updated$', line):
                     return index
+
+    def get_update_index(self, lines):
+        for index, line in enumerate(lines):
+                if re.match(r'^(\d)+ updates available (.*)$', line):
+                    return index
+
+    def remove_size_info(self, line):
+        line = re.sub(r'(D: (.)+)', "", line)
+        return line[:-3]
 
     def print_content(self, content, newline=False):
         end_line = ""

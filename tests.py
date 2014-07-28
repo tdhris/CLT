@@ -87,6 +87,11 @@ class TestParser(AppTest):
         output = output.decode(encoding)
         self.assertIn("xpra-winswitch 0.13.6-1 -> 0.13.7-1", output)
 
+    def test_update_parser(self):
+        output = check_output("./kalu_parse.py update -f kalu_output.txt", shell=True)
+        output = output.decode(encoding)
+        self.assertIn("poppler 0.26.2-1 -> 0.26.3-1", output)
+
 
 if __name__ == '__main__':
     unittest.main()
