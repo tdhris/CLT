@@ -9,7 +9,7 @@ class TestVersion(FunctionalTest):
 
     def test_the_current_version_is_printed_to_the_console(self):
         version = KaluParser.get_version()
-        command = "./kalu_parse.py -v"
+        command = "./kalu_parse.py news -v"
         result = self.run_script(os.path.join(self.path, command))
 
         #ProcResult stdout and stderr are b'' not strings
