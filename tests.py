@@ -1,6 +1,6 @@
 import unittest
 from cli.test import AppTest
-from subprocess import check_output, check_call, STDOUT
+from subprocess import check_output, check_call
 from kalu_parse import KaluParser
 import locale
 import os
@@ -81,6 +81,11 @@ class TestParser(AppTest):
         output = check_output("./kalu_parse.py news -f kalu_output.txt", shell=True)
         output = output.decode(encoding)
         self.assertIn("MariaDB 10.0 enters [extra]", output)
+
+    def test_aur_parser(self):
+        output = check_output("./kalu_parse.py aur -f kalu_output.txt", shell=True)
+        output = output.decode(encoding)
+        self.assertIn("xpra-winswitch 0.13.6-1 -> 0.13.7-1", output)
 
 
 if __name__ == '__main__':

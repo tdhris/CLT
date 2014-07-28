@@ -38,9 +38,10 @@ class KaluParser(CommandLineApp):
                        help="read the contents of the file\
                        and redirect them to stdout. If file\
                        is not provided, read from stdin.")
-        self.add_param('news',
+        self.add_param('parse',
                        nargs='?', type=str,
-                       choices=['news'])
+                       choices=['news', 'aur'],
+                       metavar='PARSE_OPTION')
 
     def main(self):
         if self.params.version:
@@ -52,8 +53,11 @@ class KaluParser(CommandLineApp):
         print(self.get_version())
 
     def parse_file(self, input):
-        if self.params.news == 'news':
+        if self.params.parse == 'news':
             parsed = self.parse_news(input)
+            self.print_content(parsed)
+        elif self.params.parse == 'aur':
+            parsed = self.parse_aur(input)
             self.print_content(parsed)
         else:
             content = self.get_unparsed_content(input)
@@ -71,6 +75,16 @@ class KaluParser(CommandLineApp):
                     news.append(line[2:])
         return news
 
+    def parse_aur(self, input):
+        aurs = []
+        content = self.get_unparsed_content(input)
+        aur_index = self.get_aur_index(content)
+        for line in content[aur_index + 1:]:
+            aur = self.get_line_content(line)
+            if aur:
+                aurs.append(aur)
+        return aurs
+
     def get_unparsed_content(self, input):
         if input == '-':
                 lines = sys.stdin.readlines()
@@ -80,10 +94,20 @@ class KaluParser(CommandLineApp):
                 lines = file.readlines()
         return lines
 
+    def get_line_content(self, line):
+        parts = re.split(r'(- <b>| |<b>|</b>)', line)
+        parsed_line = [part for part in parts if part and not re.match(r'^(- <b>|<b>|</b>)$', part)]
+        return ''.join(parsed_line)
+
+    def get_aur_index(self, lines):
+        for index, line in enumerate(lines):
+                if re.match(r'^AUR: (\d)+ packages updated$', line):
+                    return index
+
     def print_content(self, content, newline=False):
         end_line = ""
         if newline:
-            end_line = "\n"
+            end_line = os.linesep
         for line in content:
             print(line, end=end_line)
 
