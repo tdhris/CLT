@@ -60,12 +60,12 @@ class TestBasicKaluParserFunctions(AppTest):
 
     def test_can_capture_from_standard_input(self):
         text = "lala\nblahblah\n"
-        with open("lala.txt", "w") as mock_file:
+        with open("lalasa.txt", "w") as mock_file:
             mock_file.write(text)
-        output = check_output("cat lala.txt | ./kalu_parse.py -f -", shell=True)
+        output = check_output("cat lalasa.txt | ./kalu_parse.py -f -", shell=True)
         output = output.decode(encoding)
         self.assertEquals(text, output)
-        os.remove("lala.txt")
+        os.remove("lalasa.txt")
 
     def test_module_name_in_help(self):
         output = check_output("./kalu_parse.py -h", shell=True)

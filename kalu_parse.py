@@ -66,7 +66,7 @@ class KaluParser(CommandLineApp):
         print("Error: please provide an existing file")
 
     def parse_file(self, input):
-        if not self.is_file(input):
+        if input != '-' and not self.is_file(input):
             return self.print_invalid_file()
         if self.params.parse == 'news':
             parsed = self.parse_news(input)
