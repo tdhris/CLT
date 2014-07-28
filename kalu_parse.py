@@ -41,18 +41,33 @@ class KaluParser(CommandLineApp):
         self.add_param('parse',
                        nargs='?', type=str,
                        choices=['news', 'aur', 'update'],
-                       metavar='PARSE_OPTION')
+                       metavar='PARSE_OPTION',
+                       help="Choose {news, aur or update}")
 
     def main(self):
         if self.params.version:
             self.print_version()
         elif self.params.file:
             self.parse_file(self.params.file)
+        elif self.params.parse:
+            self.print_invalid_file()
+        else:
+            self.print_no_arguments()
 
     def print_version(self):
         print(self.get_version())
 
+    def print_no_arguments(self):
+        print("Error: no arguments provided.")
+        print("Type " + KaluParser._get_modulename()
+              + " --help for more information")
+
+    def print_invalid_file(self):
+        print("Error: please provide an existing file")
+
     def parse_file(self, input):
+        if not self.is_file(input):
+            return self.print_invalid_file()
         if self.params.parse == 'news':
             parsed = self.parse_news(input)
             self.print_content(parsed)
@@ -71,7 +86,7 @@ class KaluParser(CommandLineApp):
         content = self.get_unparsed_content(input)
         if content:
             first_line = content[0]
-            if re.match(r'^([1-9](\d)*) unread news$', first_line):
+            if re.match(r'^((\d)+) unread news$', first_line):
                 for line in content[1:]:
                     if not line.startswith('-'):
                         break
@@ -82,8 +97,10 @@ class KaluParser(CommandLineApp):
         aurs = []
         content = self.get_unparsed_content(input)
         aur_index = self.get_aur_index(content)
-        if aur_index:
+        if aur_index is not None:
             for line in content[aur_index + 1:]:
+                if not line.startswith('-'):
+                        break
                 aur = self.get_line_content(line)
                 if aur:
                     aurs.append(aur)
@@ -93,10 +110,11 @@ class KaluParser(CommandLineApp):
         updates = []
         content = self.get_unparsed_content(input)
         update_start = self.get_update_index(content)
-        update_end = self.get_aur_index(content)
-        if update_start and update_end:
-            update_lines = content[(update_start + 1): update_end]
+        if update_start is not None:
+            update_lines = content[(update_start + 1):]
             for line in update_lines:
+                if not line.startswith('-'):
+                        break
                 update = self.get_line_content(line)
                 if update:
                     update = self.remove_size_info(update)
@@ -107,7 +125,7 @@ class KaluParser(CommandLineApp):
         if input == '-':
                 lines = sys.stdin.readlines()
 
-        elif os.path.exists(input) and os.path.isfile(input):
+        elif self.is_file(input):
             with open(input, 'r') as file:
                 lines = file.readlines()
         return lines
@@ -120,8 +138,8 @@ class KaluParser(CommandLineApp):
 
     def get_aur_index(self, lines):
         for index, line in enumerate(lines):
-                if re.match(r'^AUR: (\d)+ packages updated$', line):
-                    return index
+            if re.match(r'^AUR: (\d)+ packages updated$', line):
+                return index
 
     def get_update_index(self, lines):
         for index, line in enumerate(lines):
@@ -138,6 +156,9 @@ class KaluParser(CommandLineApp):
             end_line = os.linesep
         for line in content:
             print(line, end=end_line)
+
+    def is_file(self, input):
+        return os.path.exists(input) and os.path.isfile(input)
 
 
 if __name__ == "__main__":
