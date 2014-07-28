@@ -28,21 +28,25 @@ class KaluParser(CommandLineApp):
         CommandLineMixin.setup(self)
         self.add_commands()
 
+    def pre_run(self):
+        CommandLineMixin.pre_run(self)
+
     def add_commands(self):
         self.add_param("-v", "--version",
                        help="print the current version number and exit",
                        default=False,
                        action="store_true",)
+        self.add_param('parse',
+                       type=str,
+                       nargs='?',
+                       choices=['news', 'aur', 'update'],
+                       metavar='PARSE_OPTION',
+                       help="Choose {news, aur or update}. Mandatory except when -v or -h is used.")
         self.add_param('-f', '--file',
                        type=str,
                        help="read the contents of the file\
                        and redirect them to stdout. If file\
                        is not provided, read from stdin.")
-        self.add_param('parse',
-                       type=str,
-                       choices=['news', 'aur', 'update'],
-                       metavar='PARSE_OPTION',
-                       help="Choose {news, aur or update}")
 
     def main(self):
         if self.params.version:
@@ -80,8 +84,9 @@ class KaluParser(CommandLineApp):
             parsed = self.parse_update(input)
             self.print_content(parsed, True)
         else:
-            content = self.get_unparsed_content(input)
-            self.print_content(content)
+            # content = self.get_unparsed_content(input)
+            # self.print_content(content)
+            self.print_no_arguments()
 
     def parse_news(self, input):
         news = []
