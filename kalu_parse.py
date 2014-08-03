@@ -31,6 +31,7 @@ class KaluParser(CommandLineApp):
     def pre_run(self):
         CommandLineMixin.pre_run(self)
 
+    #adding comment to test git
     def add_commands(self):
         self.add_param("-v", "--version",
                        help="print the current version number and exit",
